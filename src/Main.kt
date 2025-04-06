@@ -8,9 +8,15 @@ fun main() {
     val numMinas = readLine()!!.toInt()
 
     val juego = Buscaminas(filas, columnas, numMinas)
+    if (filas < 1 || columnas < 1){
+        throw IllegalArgumentException("El número de filas y columnas debe ser mayor que 0")
+    }
+    if (numMinas >= filas * columnas){
+        throw IllegalArgumentException("El número de minas debe ser menor que el número de celdas del tablero")
+    }
 
     while (!juego.esJuegoTerminado()) {
-        juego.imprimirTablero()
+        imprimirTablero(juego.tablero)
         println("Ingrese la fila y columna para destapar (o 'b' para colocar/quitar bandera):")
         val entrada = readln()
         if (entrada=="b") {
@@ -23,9 +29,37 @@ fun main() {
             val (f, c) = entrada.trim().split(" ").map { it.toInt() }
             if (juego.revelarCelda(f, c)) {
                 println("¡BOOM! Has pisado una mina. Fin del juego.")
+            } else{
+                if (juego.juegoGanado()){
+                    println("Has ganado el juego")
+                }
             }
         }
     }
-    println("Juego terminado.")
-    juego.imprimirTablero()
+    imprimirTablero(juego.tablero)
+
+
+}
+
+fun imprimirTablero(tablero: Array<Array<Buscaminas.Celda>>) {
+    print("  ")
+    for (col in tablero[0].indices) {
+        print("\u001B[34m$col \u001B[0m")
+    }
+    println()
+
+    for (fila in tablero.indices) {
+        print("\u001B[34m$fila \u001B[0m")
+        for (celda in tablero[fila]) {
+            print(
+                when {
+                    celda.tieneBandera -> "B "
+                    !celda.estaRevelada -> ". "
+                    celda.tieneMina -> "* "
+                    else -> "${celda.minasAdyacentes} "
+                }
+            )
+        }
+        println()
+    }
 }

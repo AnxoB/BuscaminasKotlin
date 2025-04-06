@@ -1,12 +1,14 @@
-data class Celda(var tieneMina: Boolean = false, var estaRevelada: Boolean = false, var tieneBandera: Boolean = false, var minasAdyacentes: Int = 0)
+
 
 class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
+
+    class Celda(var tieneMina: Boolean = false, var estaRevelada: Boolean = false, var tieneBandera: Boolean = false, var minasAdyacentes: Int = 0)
+
     val tablero: Array<Array<Celda>> = Array(filas) { Array(columnas) { Celda() } }
     var juegoTerminado: Boolean = false
+    var juegoGanado: Boolean = false
 
     init {
-        if (filas < 1 || columnas < 1) throw IllegalArgumentException("El número de filas y columnas debe ser mayor que 0")
-        if (numMinas >= filas * columnas) throw IllegalArgumentException("El número de minas debe ser menor que el número de celdas del tablero")
         colocarMinas()
         contarMinasAdyacentes()
     }
@@ -63,6 +65,10 @@ class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
                 }
             }
         }
+        if (juegoGanado()) {
+            juegoGanado = true
+            juegoTerminado = true
+        }
         return false
     }
 
@@ -76,28 +82,14 @@ class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
 
     fun esJuegoTerminado(): Boolean = juegoTerminado
 
-    fun imprimirTablero() {
-        print("  ")
-        for (col in 0 until columnas) {
-            print("\u001B[34m$col \u001B[0m") // Blue color for column numbers
-        }
-        println()
-
-        // Print rows with row numbers
-        for (fila in 0 until filas) {
-            print("\u001B[34m$fila \u001B[0m") // Blue color for row numbers
-            for (columna in 0 until columnas) {
-                val celda = tablero[fila][columna]
-                print(
-                    when {
-                        celda.tieneBandera -> "B "
-                        !celda.estaRevelada -> ". "
-                        celda.tieneMina -> "* "
-                        else -> "${celda.minasAdyacentes} " // Mostrar el número de minas adyacentes
-                    }
-                )
+    fun juegoGanado(): Boolean {
+        for (fila in tablero) {
+            for (celda in fila) {
+                if (!celda.tieneMina && !celda.estaRevelada) {
+                    return false
+                }
             }
-            println()
         }
+        return true
     }
 }
