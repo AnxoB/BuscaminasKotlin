@@ -1,5 +1,3 @@
-
-
 class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
 
     class Celda(var tieneMina: Boolean = false, var estaRevelada: Boolean = false, var tieneBandera: Boolean = false, var minasAdyacentes: Int = 0)
@@ -8,12 +6,7 @@ class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
     var juegoTerminado: Boolean = false
     var juegoGanado: Boolean = false
 
-    init {
-        if (filas < 1 || columnas < 1){
-            throw IllegalArgumentException("El número de filas y columnas debe ser mayor que 0")
-        } else if (numMinas >= filas * columnas){
-            throw IllegalArgumentException("El número de minas debe ser menor que el número de celdas del tablero")
-        }
+    fun inicializar() {
         colocarMinas()
         contarMinasAdyacentes()
     }

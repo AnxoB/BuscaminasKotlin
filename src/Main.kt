@@ -8,6 +8,14 @@ fun main() {
     val numMinas = readLine()!!.toInt()
 
     val juego = Buscaminas(filas, columnas, numMinas)
+    if (filas < 1 || columnas < 1){
+        throw IllegalArgumentException("El número de filas y columnas debe ser mayor que 0")
+    }
+    if (numMinas >= filas * columnas){
+        throw IllegalArgumentException("El número de minas debe ser menor que el número de celdas del tablero")
+    }
+
+    juego.inicializar()
 
     while (!juego.esJuegoTerminado()) {
         imprimirTablero(juego.tablero)
