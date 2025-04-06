@@ -9,6 +9,11 @@ class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
     var juegoGanado: Boolean = false
 
     init {
+        if (filas < 1 || columnas < 1){
+            throw IllegalArgumentException("El número de filas y columnas debe ser mayor que 0")
+        } else if (numMinas >= filas * columnas){
+            throw IllegalArgumentException("El número de minas debe ser menor que el número de celdas del tablero")
+        }
         colocarMinas()
         contarMinasAdyacentes()
     }
