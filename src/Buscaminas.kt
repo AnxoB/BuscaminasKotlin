@@ -1,10 +1,41 @@
 class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
 
-    class Celda(var tieneMina: Boolean = false, var estaRevelada: Boolean = false, var tieneBandera: Boolean = false, var minasAdyacentes: Int = 0)
+    class Celda{
+        private var _tieneMina = false
+        private var _estaRevelada = false
+        private var _tieneBandera = false
+        private var _minasAdyacentes = 0
 
-    val tablero: Array<Array<Celda>> = Array(filas) { Array(columnas) { Celda() } }
-    var juegoTerminado: Boolean = false
-    var juegoGanado: Boolean = false
+        val tieneMina: Boolean get() = _tieneMina
+        val estaRevelada: Boolean get() = _estaRevelada
+        val tieneBandera: Boolean get() = _tieneBandera
+        val minasAdyacentes: Int get() = _minasAdyacentes
+
+        fun ponerMina() {
+            _tieneMina = true
+        }
+
+        fun revelar() {
+            _estaRevelada = true
+        }
+
+        fun alternarBandera() {
+            if (!_estaRevelada) {
+                _tieneBandera = !_tieneBandera
+            }
+        }
+
+        fun setMinasAdyacentes(cantidad: Int) {
+            _minasAdyacentes = cantidad
+        }
+    }
+
+    private val _tablero: Array<Array<Celda>> = Array(filas) { Array(columnas) { Celda() } }
+    val tablero: Array<Array<Celda>>
+        get() = _tablero.map { it.copyOf() }.toTypedArray()
+
+    private var juegoTerminado: Boolean = false
+    private var juegoGanado: Boolean = false
 
     fun inicializar() {
         colocarMinas()
@@ -17,7 +48,7 @@ class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
             val fila = (0 until filas).random()
             val columna = (0 until columnas).random()
             if (!tablero[fila][columna].tieneMina) {
-                tablero[fila][columna].tieneMina = true
+                tablero[fila][columna].ponerMina()
                 minasColocadas++
             }
         }
@@ -37,7 +68,7 @@ class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
                             }
                         }
                     }
-                    tablero[fila][columna].minasAdyacentes = minas
+                    tablero[fila][columna].setMinasAdyacentes(minas)
                 }
             }
         }
@@ -46,7 +77,7 @@ class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
     fun revelarCelda(fila: Int, columna: Int): Boolean {
         val celda = tablero[fila][columna]
         if (celda.estaRevelada || celda.tieneBandera) return false
-        celda.estaRevelada = true
+        celda.revelar()
         if (celda.tieneMina) {
             juegoTerminado = true
             return true
@@ -73,7 +104,7 @@ class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
         if (fila !in 0 until filas || columna !in 0 until columnas) throw IllegalArgumentException("Posición fuera del tablero")
         val celda = tablero[fila][columna]
         if (!celda.estaRevelada) {
-            celda.tieneBandera = !celda.tieneBandera
+            celda.alternarBandera()
         }
     }
 
