@@ -44,7 +44,6 @@ class Buscaminas(val filas: Int, val columnas: Int, val numMinas: Int) {
     }
 
     fun revelarCelda(fila: Int, columna: Int): Boolean {
-        if (fila !in 0 until filas || columna !in 0 until columnas) throw IllegalArgumentException("Posición fuera del tablero")
         val celda = tablero[fila][columna]
         if (celda.estaRevelada || celda.tieneBandera) return false
         celda.estaRevelada = true
